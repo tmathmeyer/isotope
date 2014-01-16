@@ -5,17 +5,13 @@ modules =
 	{
 		"name" : "ECHO",
 		"location" : "./echo"
-	},
-    {
-        "name" : "ECHO2",
-        "location" : "./echo2"
-    }
+	}
 ];
 
 
 var pages = {"get":{}, "post":{}};
 
-add_page = {
+server = {
     add: function(path, callback, calltype){
         if (typeof path === 'string'){
             path = path.split("/");
@@ -51,15 +47,33 @@ add_page = {
         this.log(path, description, "green");
     }, 
 
-    post: function(pach, callback, description){
+    post: function(path, callback, description){
         this.add(path, callback, pages.post);
-    }
+        this.log(path, description, "red");
+    },
+
+    get_data: function(request, callback){
+        var body = '';
+        request.on('data', function(data){
+            body += data;
+            if (body.length > 1e6){
+                request.connection.destroy();
+                return {error: "the user attempted to post a file larger than 1GB"};
+            }
+        });
+        request.on('end', function() {
+            callback(qs.parse(body));
+        });
+    }  
 }
 
-exports.init = function() {
+exports.init = function(user_config) {
+    if (user_config){
+        modules = user_config.getModules();
+    }
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
-		require(data.location).init(add_page);
+		require(data.location).init(server);
 		console.log(" ");
 	});
 }
