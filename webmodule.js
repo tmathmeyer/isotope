@@ -1,4 +1,5 @@
 require('colors');
+var files = require('./files');
 
 modules = 
 [
@@ -7,7 +8,6 @@ modules =
 		"location" : "./echo"
 	}
 ];
-
 
 var pages = {"get":{}, "post":{}};
 
@@ -76,6 +76,11 @@ exports.init = function(user_config) {
 		require(data.location).init(server);
 		console.log(" ");
 	});
+    console.log("loading the static file reference");
+    server.get("static/_all", function(req, res, c, url){
+        console.log(url["green"]);
+        files.get_file(url.slice(0, -1), res);
+    });
 }
 
 
@@ -99,6 +104,10 @@ exports.view = function(url, type, params){
             } else if (func["_csv"]){
                 tree2 = func["_csv"];
                 vars.push(name.split(","));
+            } else if (func["_all"]){
+                vars.push(name+"/"+url.join("/"));
+                tree2 = func["_all"];
+                url = [];
             }
         } 
         func = tree2;
