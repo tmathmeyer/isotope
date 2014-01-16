@@ -10,6 +10,13 @@ modules =
 ];
 
 var pages = {"get":{}, "post":{}};
+var def = 
+[
+    {
+        "name" : "reloader",
+        "location" : "./refresh"
+    }
+];
 
 server = {
     add: function(path, callback, calltype){
@@ -52,6 +59,39 @@ server = {
         this.log(path, description, "red");
     },
 
+    get_loaded_modules: function(){
+        return modules.filter(function(a){
+            return a.state == "loaded";
+        }).map(function(a){
+            return a.name;
+        });
+    },
+
+    get_unloaded_modules: function(){
+        return modules.filter(function(a){
+            return a.state == "loaded";
+        }).map(function(a){
+            return a.name;
+        });
+    },
+
+    unload_module: function(name){
+        modules = modules.map(function(a){
+            if (a.name == name){
+                a.state = "unloaded";
+            }
+        });
+    },
+
+    reload_module: function(name){
+        modules = modules.map(function(a){
+            if (a.name == name){
+                a.state = "loaded";
+                require(a.location).init(server);
+            }
+        });
+    },
+
     get_data: function(request, callback){
         var body = '';
         request.on('data', function(data){
@@ -71,9 +111,11 @@ exports.init = function(user_config) {
     if (user_config){
         modules = user_config.getModules();
     }
+    modules = modules.concat(def);
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
 		require(data.location).init(server);
+        data.state = "loaded";
 		console.log(" ");
 	});
     console.log("loading the static file reference");
