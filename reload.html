@@ -1,0 +1,28 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script>
+        reload = function(name){
+            $.get("modules/refresh/"+name, function(data){
+                alert(data);
+            });
+        };
+
+        init = function(){
+            $.get("modules/get/all", function(data){
+                data.forEach(function(a){
+                    var inject = a.name+"     <button onclick='reload(\""+a.name+"\")'>reload</button><br />";
+                    console.log(a["location"]);
+                    document.getElementById('content').innerHTML += inject;
+                })
+            });
+        };
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="content">
+
+    </div>
+</body>
+</html>

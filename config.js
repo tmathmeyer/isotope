@@ -4,10 +4,6 @@ exports.getModules = function(){
         {
             name : "ECHO",
             location : "./echo"
-        },
-        {
-            name : "ECHO2",
-            location : "./echo2"
         }
     ];
     

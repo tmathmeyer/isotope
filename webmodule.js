@@ -4,19 +4,12 @@ var files = require('./files');
 modules = 
 [
 	{
-		"name" : "ECHO",
-		"location" : "./echo"
+		"name" : "reload",
+		"location" : "./reload"
 	}
 ];
 
 var pages = {"get":{}, "post":{}};
-var def = 
-[
-    {
-        "name" : "reloader",
-        "location" : "./refresh"
-    }
-];
 
 server = {
     add: function(path, callback, calltype){
@@ -67,6 +60,16 @@ server = {
         });
     },
 
+    get_all_modules: function(){
+        return modules;
+    },
+
+    get_module_status: function(name){
+        return modules.filter(function(a){
+            return a.name = name;
+        }).state;
+    },
+
     get_unloaded_modules: function(){
         return modules.filter(function(a){
             return a.state == "loaded";
@@ -84,12 +87,19 @@ server = {
     },
 
     reload_module: function(name){
+        var b = false;
         modules = modules.map(function(a){
             if (a.name == name){
                 a.state = "loaded";
+                console.log("reloading the " + name + " module");
+                delete require.cache[require.resolve(a.location)];
                 require(a.location).init(server);
+                console.log("\n");
+                b = true;
             }
+            return a;
         });
+        return b;
     },
 
     get_data: function(request, callback){
@@ -108,10 +118,7 @@ server = {
 }
 
 exports.init = function(user_config) {
-    if (user_config){
-        modules = user_config.getModules();
-    }
-    modules = modules.concat(def);
+    modules = user_config.getModules().concat(modules);
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
 		require(data.location).init(server);
@@ -120,9 +127,9 @@ exports.init = function(user_config) {
 	});
     console.log("loading the static file reference");
     server.get("static/_all", function(req, res, c, url){
-        console.log(url["green"]);
         files.get_file(url.slice(0, -1), res);
     });
+    console.log("\n");
 }
 
 
