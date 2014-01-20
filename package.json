@@ -4,7 +4,7 @@
   "description": "a simple webserver",
   "main": "isotope.js",
   "dependencies": {
-    "colors": "~0.6.2",
+    "colors": "~0.6.2"
   },
   "devDependencies": {},
   "scripts": {
