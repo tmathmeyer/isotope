@@ -137,7 +137,8 @@ exports.init = function(user_config) {
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
         current = data.name;
-		require("../../"+data.location).init(server);
+        data.location  = "../../"+data.location;
+		require(data.location).init(server);
         data.state = "loaded";
 		console.log(" ");
 	});
