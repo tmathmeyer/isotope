@@ -5,7 +5,7 @@ modules =
 [
 	{
 		"name" : "reload",
-		"location" : "./reload/reload"
+		"location" : "node_modules/isotope/reload/reload"
 	}
 ];
 
