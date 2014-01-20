@@ -133,7 +133,7 @@ server = {
 }
 
 exports.init = function(user_config) {
-    modules = user_config.getModules().concat(modules);
+    modules = modules.concat(user_config);
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
         current = data.name;

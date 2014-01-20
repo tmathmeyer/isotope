@@ -4,7 +4,7 @@ var config =
 [
     {
         name : "ECHO",
-        location : "./echo_me"
+        location : "./echo"
     }
 ];
 
