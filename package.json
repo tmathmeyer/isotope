@@ -1,6 +1,6 @@
 {
   "name": "isotope",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "a simple webserver",
   "main": "isotope.js",
   "dependencies": {
