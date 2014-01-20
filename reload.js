@@ -4,6 +4,10 @@ exports.init = function(server){
         files.get_file("reload.html", res);
     });
 
+    server.get("modules/css/_var", function(req, res, cook, filename){
+        files.get_file(filename, res);
+    });
+
     server.get("modules/get/all", function(req, res){
         res.writeHead(200, {"Content-Type": "text/json"});
         res.end(JSON.stringify(server.get_all_modules()));
@@ -14,12 +18,22 @@ exports.init = function(server){
         res.end(server.get_module_status(v));
     });
 
+    server.get("modules/unload/_var", function(req, res, cook, v){
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        if (server.unload_module(v)){
+            res.end("success");
+            console.log("unloaded module: "+v);
+        } else {
+            res.end("failure");
+        }
+    });
+
     server.get("modules/refresh/_var", function(req, res, cook, v){
         res.writeHead(200, {"Content-Type": "text/plain"});
         if (server.reload_module(v)){
-            res.end(v + " has been reloaded");
+            res.end("success");
         } else {
-            res.end(v + " was not reloaded");
+            res.end("failure");
         }
     });
 }

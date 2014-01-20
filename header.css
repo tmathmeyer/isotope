@@ -1,0 +1,25 @@
+th {
+	height: 60px;
+	width: 200px;
+	border: 1px solid;
+	border-color: #000;
+	color: #000;
+	background-color: #0BF;
+	font-size: 22px;
+}
+
+td {
+	height: 60px;
+	width: 200px;
+	border: 1px dotted;
+	border-color: #000;
+	color: #000;
+	background-color: #1e62d0;
+	text-align: center;
+	font-size: 22px;
+}
+
+
+table {
+    border-collapse:collapse;
+}

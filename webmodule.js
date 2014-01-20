@@ -9,7 +9,10 @@ modules =
 	}
 ];
 
+statuses = {};
+
 var pages = {"get":{}, "post":{}};
+current = "";
 
 server = {
     add: function(path, callback, calltype){
@@ -24,6 +27,8 @@ server = {
             current_branch = current_branch[path[i]];
         }
         current_branch._page = callback;
+        current_branch._module = current;
+        statuses[current] = "loaded";
     },
 
     log: function(path, description, color){
@@ -79,15 +84,23 @@ server = {
     },
 
     unload_module: function(name){
+        var b = false;
+        statuses[name] = "unloaded";
         modules = modules.map(function(a){
             if (a.name == name){
                 a.state = "unloaded";
+                b = true;
+                delete require.cache[require.resolve(a.location)];
             }
+            return a;
         });
+        return b;
     },
 
     reload_module: function(name){
         var b = false;
+        current = name;
+        statuses[name] = "loaded";
         modules = modules.map(function(a){
             if (a.name == name){
                 a.state = "loaded";
@@ -121,6 +134,7 @@ exports.init = function(user_config) {
     modules = user_config.getModules().concat(modules);
 	modules.forEach(function(data){
 		console.log("the "+data.name+" module has been loaded");
+        current = data.name;
 		require(data.location).init(server);
         data.state = "loaded";
 		console.log(" ");
@@ -164,7 +178,7 @@ exports.view = function(url, type, params){
             return;
         }
     }
-    if (func._page){
+    if (func._page && statuses[func._module] == "loaded"){
         func._page.apply(null, params.concat(vars));
         return true;
     }
