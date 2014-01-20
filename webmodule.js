@@ -108,9 +108,13 @@ server = {
                 a.state = "loaded";
                 console.log("reloading the " + name + " module");
                 delete require.cache[require.resolve(a.location)];
-                require(a.location).init(server);
-                console.log("\n");
-                b = true;
+                try{
+                    require(a.location).init(server);
+                    console.log("\n");
+                    b = true;
+                } catch(err){
+                    console.log(err);
+                }
             }
             return a;
         });
