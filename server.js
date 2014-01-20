@@ -1,2 +1,11 @@
 var server = require('./isotope');
-server.create(8000, './config');
+
+var config = 
+[
+    {
+        name : "ECHO",
+        location : "./echo_me"
+    }
+];
+
+server.create(8000, config);

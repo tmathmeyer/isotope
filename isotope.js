@@ -7,7 +7,7 @@ var files = require("./files");
 
 exports.create = function(port, config){
     if (config){
-        modules.init(require(config));
+        modules.init(config);
     } else {
         modules.init();
     }
