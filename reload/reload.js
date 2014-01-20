@@ -1,7 +1,7 @@
 exports.init = function(server){
     server.get("modules", function(req, res, cook){
         if (res.connection.remoteAddress == "127.0.0.1"){
-            server.files.get_file("node_modules/isotope_server/reload/reload.html", res);
+            server.files.get_file("node_modules/isotope/reload/reload.html", res);
         } else {
             res.writeHead(200, {"Content-Type": "text/json"});
             res.end({error: "denied"});
@@ -10,7 +10,7 @@ exports.init = function(server){
 
     server.get("modules/css/_var", function(req, res, cook, filename){
         if (res.connection.remoteAddress == "127.0.0.1"){
-            server.files.get_file("node_modules/isotope_server/reload/"+filename, res);
+            server.files.get_file("node_modules/isotope/reload/"+filename, res);
         } else {
             res.writeHead(200, {"Content-Type": "text/json"});
             res.end({error: "denied"});
