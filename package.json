@@ -1,0 +1,31 @@
+{
+  "name": "isotope_server",
+  "version": "0.1.0",
+  "description": "a simple webserver",
+  "main": "isotope.js",
+  "dependencies": {
+    "colors": "~0.6.2",
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tmathmeyer/isotope.git"
+  },
+  "keywords": [
+    "server",
+    "http",
+    "isotope",
+    "web",
+    "modular"
+  ],
+  "author": "Ted Meyer",
+  "license": "GPL v2",
+  "bugs": {
+    "url": "https://github.com/tmathmeyer/isotope/issues"
+  },
+  "homepage": "https://github.com/tmathmeyer/isotope"
+}

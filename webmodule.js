@@ -5,7 +5,7 @@ modules =
 [
 	{
 		"name" : "reload",
-		"location" : "./reload"
+		"location" : "./reload/reload"
 	}
 ];
 
@@ -15,6 +15,8 @@ var pages = {"get":{}, "post":{}};
 current = "";
 
 server = {
+    files : files,
+
     add: function(path, callback, calltype){
         if (typeof path === 'string'){
             path = path.split("/");

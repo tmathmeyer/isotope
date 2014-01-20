@@ -1,3 +1,4 @@
+// example config
 exports.getModules = function(){
     result = 
     [
