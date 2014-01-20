@@ -20,15 +20,17 @@
 
             reload = function(name){
                 $.get("modules/refresh/"+name, function(data){
-                    mark_status(name, "enabled");
-                    alert(data);
+                    if (data == "success"){
+                        mark_status(name, "enabled");
+                    }
                 });
             }
 
             unload = function(name){
                 $.get("modules/unload/"+name, function(data){
-                    mark_status(name, "disabled");
-                    alert(data);
+                    if (data == "success"){
+                        mark_status(name, "disabled");
+                    }
                 });
             }
 

@@ -1,10 +1,10 @@
 exports.init = function(server){
     server.get("modules", function(req, res, cook){
-        server.files.get_file("reload/reload.html", res);
+        server.files.get_file("node_modules/isotope_server/reload/reload.html", res);
     });
 
     server.get("modules/css/_var", function(req, res, cook, filename){
-        server.files.get_file("reload/"+filename, res);
+        server.files.get_file("node_modules/isotope_server/reload/"+filename, res);
     });
 
     server.get("modules/get/all", function(req, res){
