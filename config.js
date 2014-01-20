@@ -1,13 +1,10 @@
 // example config
 exports.getModules = function(){
-    result = 
+    return 
     [
         {
             name : "ECHO",
             location : "./echo"
         }
     ];
-    
-    return result;
-
 }
