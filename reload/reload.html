@@ -37,7 +37,9 @@
             init = function(){
                 $.get("modules/get/all", function(data){
                     data.forEach(function(a){
-                        add_row(a.name, a.state=="loaded"?"enabled":"disabled");
+                        if (a.name != "reload"){
+                            add_row(a.name, a.state=="loaded"?"enabled":"disabled");
+                        }
                     })
                 });
             }
