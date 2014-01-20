@@ -4,7 +4,7 @@ exports.init = function(server){
             server.files.get_file("node_modules/isotope/reload/reload.html", res);
         } else {
             res.writeHead(200, {"Content-Type": "text/json"});
-            res.end({error: "denied"});
+            res.end(JSON.stringify({error: "denied"}));
         }
     });
 
@@ -13,7 +13,7 @@ exports.init = function(server){
             server.files.get_file("node_modules/isotope/reload/"+filename, res);
         } else {
             res.writeHead(200, {"Content-Type": "text/json"});
-            res.end({error: "denied"});
+            res.end(JSON.stringify({error: "denied"}));
         }
     });
 
@@ -22,7 +22,7 @@ exports.init = function(server){
         if (res.connection.remoteAddress == "127.0.0.1"){
             res.end(JSON.stringify(server.get_all_modules()));
         } else {
-            res.end({error: "denied"});
+            res.end(JSON.stringify({error: "denied"}));
         }
     });
 
@@ -31,7 +31,7 @@ exports.init = function(server){
         if (res.connection.remoteAddress == "127.0.0.1"){
             res.end(server.get_module_status(v));
         } else {
-            res.end({error: "denied"});
+            res.end(JSON.stringify({error: "denied"}));
         }
     });
 
