@@ -5,7 +5,7 @@ Isotope is a server-side web framework that allows fairly complex page structure
 To use isotope, one must create a server file, normally server.js, that is executed by node. A good example is:
 
 ```JavaScript
-var server = require('./isotope');
+var server = require('isotope');
 server.create(8000, './config');
 ```
 
