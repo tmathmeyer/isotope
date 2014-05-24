@@ -1,4 +1,5 @@
-var files = require('./files');
+var path = require("path");
+var fs = require("fs");
 
 var defined_paths = {
     get : {}, 
@@ -32,7 +33,12 @@ webmodule.prototype.initialize = function(configuration) {
     };
 };
 
-webmodule.prototype.view = function(url, type, params) {
+webmodule.prototype.redirect = function(response, from_url, to_url) {
+    response.writeHead(301, {"Location": to_url});
+    response.end(to_url);
+}
+
+webmodule.prototype.load_url = function(url, type, params) {
     var func;
     var vars = [];
     if (type == 'get' || type == 'GET' || type == '_get') {
@@ -77,7 +83,7 @@ webmodule.prototype.post = function(path, callback, description) {
     add(path, callback, defined_paths.post);
 };
 
-webmodule.prototype.get_postdata = function(request, callback) {
+webmodule.prototype.extract_data = function(request, callback) {
     var body = '';
 
     request.on('data', function(data) {
@@ -92,6 +98,26 @@ webmodule.prototype.get_postdata = function(request, callback) {
         callback(qs.parse(body));
     });
 };
+
+webmodule.prototype.stream = function(response, fp, type) {
+    path.exists(fp, function(exists) {
+        if (exists) {
+            file = fs.createReadStream(fp);
+            response.writeHead(200, type?type:{"Content-Type:": "text/plain"});
+
+            file.on('data', function(chunk) {
+                response.write(chunk);
+            });
+
+            file.on('end', function() {
+                response.end();
+            });
+        } else {
+            response.writeHead(404, {"Content-Type": "text/plain"});
+            response.end();
+        }
+    }, this);
+}
 
 
 exports.webmodule = new webmodule();
