@@ -2,77 +2,83 @@ isotope
 =======
 
 Isotope is a server-side web framework that allows fairly complex page structures with very little code.
-To use isotope, one must create a server file, normally server.js, that is executed by node. A good example is:
+It is similar to express, though less featureful and more lightweight. This is the dev branch of the server, 
+so expect differences from the master branch. right now most of the work is going into a re-write with better
+practices and improved readability. It is not fully feature complete with master (see TODO).
 
+
+
+####Example
 ```JavaScript
-var server = require('isotope');
-server.create(8000, './config');
-```
+var server = require("isotope").create(8080);
 
-this creates a server on port 8000 with a configuration file located in the same folder called config.js.
-note: for any port number under 1024, root access is needed.
+server.get("csv/_csv", function(req, res, csv) {
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    //write each param on a new line
+    csv.forEach(function(each){
+        res.write(each+"\n");
+    });
+    res.end();
+});
 
-The config file is where one should list the names of each set of pages as well as the path to each definition. Each entry in the list is considered a separate "module" and pages are grouped together this way for unloading and reloading. an example config would look like this:
+server.get("fail", function(req, res) {
+    // send a 301 from "fail" to "csv/failure,on,every,corner"
+    server.redirect(res, "fail", "csv/failure,on,every,corner");
+});
 
-```JavaScript
-exports.getModules = function(){
-    return [
-        {
-            name : "echo",
-            location : "./echo"
-        },
-        {
-            name : "reverse",
-            location : "./reverse"
-        }
-    ];
-}
-```
+server.get("fstest/_var", function(req, res, a){
+    // stream a document from the filesystem (note, this isn't entirely safe yet)
+    server.stream(res, "/Users/ted/Documents/"+a);
+});
 
-Each of these (echo, reverse) are loaded when the server is started, and each can be loaded and unloaded through a web interface that is only accessible from localhost. 
+server.get("cookies", function(req, res) {
+    // print all cookies to the document
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    server.eachCookie(function(cname, cvalue){
+        res.write(cname + " = " + cvalue + "<br />");
+    });
+    res.end();
+});
 
-Finally, modules are the most important part. They generally look something like this:
+server.post("accept", function(req, res){
+    response.writeHead(200, {"Content-Type": "text/plain"});
 
-```JavaScript
-exports.init = function(server){
-    server.get("echo/_var", function(request, response, cookies, val){
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        response.end(v);
+    // print to console the data that the user posts
+    server.extract_data(req, function(data){
+        console.log(data);
     });
 
-    server.get("echo/_csv", function(request, response, cookies, csv){
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        csv.forEach(function(each){
-            response.write(each+"\n");
-        });
-        response.end();
-    });
-
-    server.post("echo/post", function(request, response){
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        response.end("you made a post!!!");
-    });
-}
+    response.end("post successful");
+});
 ```
 
-Each of the 
+####Overview
+Each server.get() and server.post() passes a callback function into the server core that gets executed when a user makes a request that matches the provided request. What makes the get and post functions special are the variable urls. Url segments beginning with an _ are as follows:
 
-```
-server.get()
-server.post()
-```
+varible | what it does
+--------| -------------
+_var    | causes the server to pass the actual string as a parameter to the callback function (many of these can be used in one url)
+_csv    | causes the server to pass the actual string split by "," as an array to the callback function
+_all    | causes the server to ignore everything after the _all and pass the rest of the url back to the server 
 
-are the functions for creating pages at the given path, as well as the functions that are executed when that path is accessed. There are also three special URL modifiers:
-_var : matches any url value (split by "/") and passes the actual value to the function
-_csv : takes any comma separated list in the url and passes the elements as an array to the function
-_raw : all parts of the URL following the _raw tag are interpreted as a filesystem path. 
 
-Finally, each function passed to the .get() or .post() methods takes functions in the following order:
+####Posting data
+The last block in the example shows how to recieve data from the client. It is still fairly buggy with large chunks of data. this needs improvment.
 
-```
-request : the http_request object (as defined in the nodejs docs)
-response : the http_response object (as defined in the nodejs docs)
-cookies : any cookies associated with the domain
-```
 
-followed by any number of parameters, corresponding to the number of _var, _csv, and _raw modifiers in the url. 
+####Cookies
+Cookies are accessed by the server directly from the request object. The penultimate example block shows how this is done.
+
+
+##TODO:
+- [X] move filesystem interaction out of the shitty files.js
+- [X] clean the webmodules.js file for readibility
+- [ ] custom 404 pages
+- [ ] on-page error reporting
+- [ ] fewer crashes!
+- [ ] security and sessions
+- [ ] re-introduce modules.
+- [ ] allow users to define their own variable _urls
+- [ ] improved streaming functionality
+- [ ] introduce smoke testing framework
+- [ ] interactive cli

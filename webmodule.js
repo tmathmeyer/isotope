@@ -119,5 +119,13 @@ webmodule.prototype.stream = function(response, fp, type) {
     }, this);
 }
 
+webmodule.prototype.eachCookie = function (request, cb) {
+    if (request && request.headers && request.headers.cookie) {
+        request.headers.cookie.split(';').forEach(function( cookie ) {
+            var parts = cookie.split('=');
+            cb(parts[0], parts[1]);
+        });
+    }
+}
 
 exports.webmodule = new webmodule();
