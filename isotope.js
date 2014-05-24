@@ -1,16 +1,15 @@
 var http = require("http");
 var url = require("url");
-var modules = require("./webmodule");
 var files = require("./files");
 
 
 
-exports.create = function(port, config){
-    if (config){
-        modules.init(config);
-    } else {
-        modules.init();
+exports.create = function(port, config) {
+    webmodule = require("./webmodule").webmodule;
+    if (config) {
+        webmodule.initialize(config);
     }
+    
 
     http.createServer(function(request, response) {
         var uri = url.parse(request.url).pathname;
@@ -20,10 +19,12 @@ exports.create = function(port, config){
 		    cookies[ parts[ 0 ].trim() ] = ( parts[ 1 ] || '' ).trim();
 	    });
 
-	    var success = modules.view(uri.split("/").slice(1), request.method, [request, response, cookies]);
+	    var success = webmodule.view(uri.split("/").slice(1), request.method, [request, response, cookies]);
 	    if (! success){
 		    files.get_file(uri.substr(1), response);
     	}
 
     }).listen(parseInt(port, 10));
+
+    return webmodule;
 }
