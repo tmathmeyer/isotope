@@ -74,8 +74,10 @@ Cookies are accessed by the server directly from the request object. The penulti
 - [X] move filesystem interaction out of the shitty files.js
 - [X] clean the webmodules.js file for readibility
 - [X] custom 404 pages
-- [ ] on-page error reporting
-- [ ] fewer crashes!
+- [X] on-page error reporting
+    - [X] custom on page error reporting
+- [X] fewer crashes!
+    - [ ] proof of fewer crashes
 - [ ] security and sessions
 - [ ] re-introduce modules.
 - [ ] allow users to define their own variable _urls

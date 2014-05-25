@@ -133,8 +133,17 @@ webmodule.prototype.notFound = function(response) {
     response.end("404");
 }
 
+webmodule.prototype.reportError = function(response, errors) {
+    response.writeHead(500, {"Content-Type": "text/plain"});
+    response.end(errors+"");
+}
+
 webmodule.prototype.define404 = function(notFoundFunction) {
     webmodule.prototype.notFound = notFoundFunction;
+}
+
+webmodule.prototype.define500 = function(notFoundFunction) {
+    webmodule.prototype.reportError = notFoundFunction;
 }
 
 exports.webmodule = new webmodule();
