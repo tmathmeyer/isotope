@@ -134,11 +134,11 @@ _all    | causes the server to ignore everything after the _all and pass the res
 
 
 ####Posting data
-The last block in the example shows how to recieve data from the client. It is still fairly buggy with large chunks of data. this needs improvment.
+It is still fairly buggy with large chunks of data. see Example for more information.
 
 
 ####Cookies
-Cookies are accessed by the server directly from the request object. The penultimate example block shows how this is done.
+Cookies are accessed by the server directly from the request object. see Example for more information.
 
 
 ##TODO:
@@ -157,3 +157,4 @@ Cookies are accessed by the server directly from the request object. The penulti
 - [ ] introduce smoke testing framework
 - [ ] interactive cli
 - [ ] add support for rendering engines
+- [ ] add builtin header support
