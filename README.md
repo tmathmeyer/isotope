@@ -1,7 +1,7 @@
 isotope
 =======
 
-Isotope is a server-side web framework that allows fairly complex page structures with very little code.
+Isotope is a server-side web framework that allows fairly complex url structures with very little code.
 It is similar to express, though less featureful and more lightweight. This is the dev branch of the server, 
 so expect differences from the master branch. right now most of the work is going into a re-write with better
 practices and improved readability. It is not fully feature complete with master (see TODO).
@@ -156,3 +156,4 @@ Cookies are accessed by the server directly from the request object. The penulti
 - [ ] improved streaming functionality
 - [ ] introduce smoke testing framework
 - [ ] interactive cli
+- [ ] add support for rendering engines
