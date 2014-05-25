@@ -187,7 +187,7 @@ webmodule.prototype.types = {
 webmodule.prototype.headers = {
 
     ok: function(response, contentType) {
-        response.writeHead(200, ContentType);
+        response.writeHead(200, ContentType?contentType:webmodule.prototype.types[plain]);
     },
 
     redirect: function(response, url) {
