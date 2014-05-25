@@ -59,11 +59,6 @@ webmodule.prototype.initialize = function(configuration) {
     };
 };
 
-webmodule.prototype.redirect = function(response, from_url, to_url) {
-    response.writeHead(301, {"Location": to_url});
-    response.end(to_url);
-}
-
 webmodule.prototype.load_url = function(url, type, params) {
     var func;
     var vars = [];
@@ -180,6 +175,26 @@ webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
     });
 }
 
+webmodule.prototype.types = {
+    plain: {"Content-Type": "text/plain"},
+    html : {"Content-Type": "text/html"},
+    css  : {"Content-Type": "text/css"},
+    js   : {"Content-Type": "text/js"},
+    png  : {"Content-Type": "image/png"},
+    jpg  : {"Content-Type": "image/jpeg"}
+}
+
+webmodule.prototype.headers = {
+
+    ok: function(response, contentType) {
+        response.writeHead(200, ContentType);
+    },
+
+    redirect: function(response, url) {
+        response.writeHead(301, {"Location": url?url:""});
+        response.end(url?url:"");
+    }
+}
 
 
 exports.webmodule = new webmodule();
