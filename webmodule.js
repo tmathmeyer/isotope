@@ -21,7 +21,7 @@ add = function(path, page_execution, http_action) {
     current_branch._page = page_execution;
 }
 
-webmodule = function(){}
+var webmodule = function(){}
 
 webmodule.prototype.initialize = function(configuration) {
     configuration.forEach(function(data){
@@ -126,6 +126,15 @@ webmodule.prototype.eachCookie = function (request, cb) {
             cb(parts[0], parts[1]);
         });
     }
+}
+
+webmodule.prototype.notFound = function(response) {
+    response.writeHead(404, {"Content-Type": "text/plain"});
+    response.end("404");
+}
+
+webmodule.prototype.define404 = function(notFoundFunction) {
+    webmodule.prototype.notFound = notFoundFunction;
 }
 
 exports.webmodule = new webmodule();
