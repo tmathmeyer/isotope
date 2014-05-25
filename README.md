@@ -137,7 +137,7 @@ _all    | causes the server to ignore everything after the _all and pass the res
 It is still fairly buggy with large chunks of data. see Example for more information.
 
 
-####Cookies
+####Cookies ![alt text](http://osx.wdfiles.com/local--files/icon:safari-cookies/Safari-Cookies.png "yummmmmmm")
 Cookies are accessed by the server directly from the request object. see Example for more information.
 
 
