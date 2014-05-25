@@ -10,7 +10,7 @@ exports.create = function(port, config) {
     http.createServer(function(request, response) {
         try {
             var uri = url.parse(request.url).pathname.split("/").slice(1);
-            if (! webmodule.load_url(uri, request.method, [request, response])) {
+            if (! webmodule.load_url(uri, request.method, [response, request])) {
                 webmodule.notFound(response);
             }
         } catch (exc) {

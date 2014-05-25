@@ -12,7 +12,43 @@ practices and improved readability. It is not fully feature complete with master
 ```JavaScript
 var server = require("isotope").create(8080);
 
-server.get("csv/_csv", function(req, res, csv) {
+// super basic demo of the app process
+server.get("helloworld", function(res){
+    res.writeHead(200, {"Content-Type":"text/plain"});
+    res.end("hello world!");
+});
+
+// accept a post request, and log the data
+server.post("accept", function(res, req){
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.end();
+
+    // print to console the data that the user posts
+    server.extract_data(req, function(data){
+        console.log(data);
+    });
+});
+
+
+
+
+//lets throw in the "underscore"
+//a part of a URL object that is passed back dynamically
+server.get("echo/_var", function(res, req, part){
+    res.writeHead(200, {"Content-Type":"text/plain"});
+    res.end(part); // super basic echo module. puts the _var on the screen
+});
+
+//the _var underscore can be used multiple times in a url!
+server.get("greet/_var/_var", function(res, req, first, last){
+    res.writeHead(200, {"Content-Type":"text/plain"});
+    res.end("greetings "+first+" "+last);
+});
+
+// the csv underscore allows the user to pass in a list separated with commas. 
+// think imgur multi-image urls (the inspiration)
+// this can also be used many times in one url, like _var
+server.get("csv/_csv", function(res, req, csv) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     //write each param on a new line
     csv.forEach(function(each){
@@ -21,17 +57,20 @@ server.get("csv/_csv", function(req, res, csv) {
     res.end();
 });
 
-server.get("fail", function(req, res) {
+
+
+// server functions (standard redirection, filesystem interaction, cookies, and more)
+server.get("redirect", function(res, req) {
     // send a 301 from "fail" to "csv/failure,on,every,corner"
-    server.redirect(res, "fail", "csv/failure,on,every,corner");
+    server.redirect(res, "redirect", "csv/failure,on,every,corner");
 });
 
-server.get("fstest/_var", function(req, res, a){
+server.get("fstest/_var", function(res, req, a){
     // stream a document from the filesystem (note, this isn't entirely safe yet)
     server.stream(res, "/Users/ted/Documents/"+a);
 });
 
-server.get("cookies", function(req, res) {
+server.get("cookies", function(res, req) {
     // print all cookies to the document
     res.writeHead(200, {"Content-Type": "text/plain"});
     server.eachCookie(function(cname, cvalue){
@@ -40,15 +79,47 @@ server.get("cookies", function(req, res) {
     res.end();
 });
 
-server.post("accept", function(req, res){
-    response.writeHead(200, {"Content-Type": "text/plain"});
 
-    // print to console the data that the user posts
-    server.extract_data(req, function(data){
-        console.log(data);
+
+
+
+// META: this allows you to dynamically change HOW the server works.
+//       it is essentially an API into the server itself
+server.meta.define404(function(response) {
+    // set up a custom 404 page. 
+    // here we change "404" to "custom 404 page"
+    response.writeHead(404, {"Content-Type": "text/plain"});
+    response.end("custom 404 page");
+});
+
+server.meta.define500(function(response, error) {
+    // set up a custom 500 page.
+    response.writeHead(404, {"Content-Type": "text/plain"});
+    response.write("error is as follows\n");
+    response.end(error+"");
+});
+
+// then of course TEST the custom 500 page
+server.get("fail", function(res) {
+    res.callNonExistantFunction();
+});
+
+// remember underscores? those are meta too. you can add your own custom ones
+// we recommend prependin each with an _, but it is optional. 
+// node: if you leave out the underscore, one will NOT be added
+server.meta.addunderscore("_every", function(name, url){
+    url.unshift(name);
+    return url;
+}, true);
+
+// test the new underscore we just added
+server.get("_every", function(res, req, url) {
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    //write each param on a new line
+    url.forEach(function(each){
+        res.write(each+"\n");
     });
-
-    response.end("post successful");
+    res.end();
 });
 ```
 
@@ -77,10 +148,11 @@ Cookies are accessed by the server directly from the request object. The penulti
 - [X] on-page error reporting
     - [X] custom on page error reporting
 - [X] fewer crashes!
-    - [ ] proof of fewer crashes
+    - [ ] proof of fewer crashes (unit tests)
 - [ ] security and sessions
 - [ ] re-introduce modules.
-- [ ] allow users to define their own variable _urls
+- [X] make the server itself modifiable though meta-functions
+    - [X] allow users to define their own variable _urls
 - [ ] improved streaming functionality
 - [ ] introduce smoke testing framework
 - [ ] interactive cli

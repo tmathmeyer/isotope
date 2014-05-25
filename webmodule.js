@@ -22,6 +22,32 @@ add = function(path, page_execution, http_action) {
 }
 
 var webmodule = function(){}
+webmodule.prototype.meta = {};
+webmodule.prototype.meta.underscore = [
+    {
+        name: "_var",
+        clearonwrite: false,
+        appvars: function(name, url){
+            return name;
+        }
+    },
+    {
+        name: "_csv",
+        clearonwrite: false,
+        appvars: function(name, url){
+            return name.split(",");
+        }
+    },
+    {
+        name: "_all",
+        clearonwrite: true,
+        appvars: function(name, url) {
+            url.unshift(name);
+            return url.join("/");
+        }
+    }
+];
+
 
 webmodule.prototype.initialize = function(configuration) {
     configuration.forEach(function(data){
@@ -46,23 +72,19 @@ webmodule.prototype.load_url = function(url, type, params) {
     } else if (type == 'post' || type == 'POST' || type == '_post') {
         func = defined_paths.post;
     }
-
-    
     while(url.length != 0) {
         var name = url.shift();
         var tree2 = func[name];
         if (typeof tree2 === 'undefined') {
-            if (func["_var"]) {
-                tree2 = func["_var"];
-                vars.push(name);
-            } else if (func["_csv"]) {
-                tree2 = func["_csv"];
-                vars.push(name.split(","));
-            } else if (func["_all"]) {
-                vars.push(name+"/"+url.join("/"));
-                tree2 = func["_all"];
-                url = [];
-            }
+            webmodule.prototype.meta.underscore.forEach(function(tuple) {
+                if (func[tuple.name]) {
+                    tree2 = func[tuple.name];
+                    vars.push(tuple.appvars(name, url));
+                    if (tuple.clearonwrite) {
+                        url = [];
+                    }
+                }
+            });
         } 
         func = tree2;
         if (typeof func === 'undefined') {
@@ -138,12 +160,26 @@ webmodule.prototype.reportError = function(response, errors) {
     response.end(errors+"");
 }
 
-webmodule.prototype.define404 = function(notFoundFunction) {
+
+
+
+
+webmodule.prototype.meta.define404 = function(notFoundFunction) {
     webmodule.prototype.notFound = notFoundFunction;
 }
 
-webmodule.prototype.define500 = function(notFoundFunction) {
+webmodule.prototype.meta.define500 = function(notFoundFunction) {
     webmodule.prototype.reportError = notFoundFunction;
 }
+
+webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
+    webmodule.prototype.meta.underscore.push({
+        "name": name,
+        "clearonwrite": absorbAll,
+        "appvars": callback
+    });
+}
+
+
 
 exports.webmodule = new webmodule();
