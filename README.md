@@ -142,6 +142,7 @@ Cookies are accessed by the server directly from the request object. see Example
 
 
 ##TODO:
+###misc:
 - [X] move filesystem interaction out of the shitty files.js
 - [X] clean the webmodules.js file for readibility
 - [X] custom 404 pages
@@ -150,11 +151,14 @@ Cookies are accessed by the server directly from the request object. see Example
 - [X] fewer crashes!
     - [ ] proof of fewer crashes (unit tests)
 - [ ] security and sessions
-- [ ] re-introduce modules.
 - [X] make the server itself modifiable though meta-functions
     - [X] allow users to define their own variable _urls
 - [ ] improved streaming functionality
 - [ ] introduce smoke testing framework
-- [ ] interactive cli
 - [ ] add support for rendering engines
 - [ ] add builtin header support
+###feature-completion:
+- [ ] re-introduce modules.
+- [ ] interactive cli
+    - [ ] at least print SOMETHING
+
