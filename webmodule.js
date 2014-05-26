@@ -155,6 +155,14 @@ webmodule.prototype.reportError = function(response, errors) {
     response.end(errors+"");
 }
 
+webmodule.prototype.readTemplate = function(templateName, renderfunction){
+    fs.readFile(templateName, function (err,data) {
+        if (! err) {
+            renderfunction(data);
+        }
+    });
+}
+
 
 
 
