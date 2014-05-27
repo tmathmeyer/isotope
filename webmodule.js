@@ -6,6 +6,28 @@ var defined_paths = {
     post : {}
 };
 
+var webrenderer = function(){}
+webrenderer.prototype._list = [];
+webrenderer.prototype.add = function(render) {
+    this._list.unshift(render);
+    return this;
+}
+webrenderer.prototype.resolve = function(finalizer) {
+    if (this._list.length == 0){
+        finalizer();
+    } else {
+        var thisfunc = this._list.shift();
+        webrenderer.prototype.resolve(function(){
+            thisfunc();
+            finalizer();
+        })
+    }
+}
+
+
+
+
+
 add = function(path, page_execution, http_action) {
     if (typeof path === 'string'){
         path = path.split("/");
@@ -47,6 +69,10 @@ webmodule.prototype.meta.underscore = [
         }
     }
 ];
+
+webmodule.prototype.getRenderer = function(){
+    return new webrenderer();
+}
 
 
 webmodule.prototype.initialize = function(configuration) {
@@ -182,6 +208,11 @@ webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
         "appvars": callback
     });
 }
+
+
+
+
+
 
 webmodule.prototype.types = {
     plain: {"Content-Type": "text/plain"},
