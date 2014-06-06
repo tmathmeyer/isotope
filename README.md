@@ -1,5 +1,6 @@
 isotope
 =======
+[![Code Climate](https://codeclimate.com/github/tmathmeyer/isotope.png)](https://codeclimate.com/github/tmathmeyer/isotope)
 
 Isotope is a server-side web framework that allows fairly complex url structures with very little code.
 It is similar to express, though less featureful and more lightweight. This is the dev branch of the server, 
