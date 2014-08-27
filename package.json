@@ -1,6 +1,6 @@
 {
   "name": "isotope-dev",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "a simple webserver with powerful dynamic url features",
   "main": "isotope.js",
   "devDependencies": {},
@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/tmathmeyer/isotope/issues"
   },
-  "homepage": "https://github.com/tmathmeyer/isotope"
+  "homepage": "https://github.com/tmathmeyer/isotope",
+  "dependencies": {
+    "querystring": "^0.2.0"
+  }
 }
