@@ -20,7 +20,7 @@
     "modular"
   ],
   "author": "Ted Meyer",
-  "license": "GPL v2",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/tmathmeyer/isotope/issues"
   },
