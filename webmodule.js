@@ -25,6 +25,17 @@ webrenderer.prototype.resolve = function(finalizer) {
     }
 }
 
+chain = function(value) {
+    return {
+        then : function(cb){
+            return chain(cb(value));
+        }
+    };
+}
+
+
+
+
 
 
 
@@ -41,10 +52,60 @@ add = function(path, page_execution, http_action) {
         current_branch = current_branch[every];
     });
 
-    current_branch._page = page_execution;
+    return (current_branch._page = {
+        exec: page_execution,
+        status: true
+    });
 }
 
-var webmodule = function(){}
+
+var pools = {};
+createPool = function(name, wm) {
+    if (pools[name]) {
+        return pools[name];
+    }
+    return (pools[name] = {
+        tagged : [],
+        enable : function() {
+            this.tagged.forEach(function(e){
+                e.status = true;
+            });
+        },
+        disable : function() {
+            this.tagged.forEach(function(e){
+                e.status = false;
+            });
+        },
+        get : function(path, cb) {
+            var res = wm.get(path, cb);
+            this.tagged.push(res);
+            return res;
+        }, post : function(path, cb) {
+            var res = wm.post(path, cb);
+            this.tagged.push(res);
+            return res;
+        }
+    });
+}
+
+
+var webmodule = function(){
+    this.pool = function(name, withPool){
+        withPool(createPool(name, this));
+    }
+}
+
+webmodule.prototype.getPool = function(nameornull) {
+    if (typeof nameornull === 'undefined') {
+        return Object.keys(pools);
+    }
+    return {
+        tagged : pools[nameornull].tagged,
+        disable : pools[nameornull].disable,
+        enable : pools[nameornull].enable
+    };
+}
+
 webmodule.prototype.meta = {};
 webmodule.prototype.meta.underscore = [
     {
@@ -70,6 +131,10 @@ webmodule.prototype.meta.underscore = [
         }
     }
 ];
+
+webmodule.prototype.pool = function(name, withPool) {
+    withPool(createPool(name));
+}
 
 webmodule.prototype.getRenderer = function(){
     return new webrenderer();
@@ -113,18 +178,18 @@ webmodule.prototype.load_url = function(url, type, params) {
             return;
         }
     }
-    if (func._page) {
-        func._page.apply(null, params.concat(vars));
+    if (func._page && func._page.status) {
+        func._page.exec.apply(null, params.concat(vars));
         return true;
     }
 };
 
 webmodule.prototype.get = function(path, callback, description, color) {
-    add(path, callback, defined_paths.get);
+    return add(path, callback, defined_paths.get);
 }; 
 
 webmodule.prototype.post = function(path, callback, description) {
-    add(path, callback, defined_paths.post);
+    return add(path, callback, defined_paths.post);
 };
 
 webmodule.prototype.extract_data = function(request, callback) {

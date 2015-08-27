@@ -1,16 +1,3 @@
-isotope
-=======
-[![Code Climate](https://codeclimate.com/github/tmathmeyer/isotope.png)](https://codeclimate.com/github/tmathmeyer/isotope)
-
-Isotope is a server-side web framework that allows fairly complex url structures with very little code.
-It is similar to express, though less featureful and more lightweight. This is the dev branch of the server, 
-so expect differences from the master branch. right now most of the work is going into a re-write with better
-practices and improved readability. It is not fully feature complete with master (see TODO).
-
-
-
-####Example
-```JavaScript
 var server = require("./isotope").create(8080); // soon will be changed to isotope
 
 // super basic demo of the app process
@@ -158,45 +145,3 @@ server.pool("re-enable", function(pool) {
 
 
 console.log(server.getPool("example_pool"));
-```
-
-####Overview
-Each server.get() and server.post() passes a callback function into the server core that gets executed when a user makes a request that matches the provided request. What makes the get and post functions special are the variable urls. Url segments beginning with an _ are as follows:
-
-varible | what it does
---------| -------------
-_var    | causes the server to pass the actual string as a parameter to the callback function (many of these can be used in one url)
-_csv    | causes the server to pass the actual string split by "," as an array to the callback function
-_all    | causes the server to ignore everything after the _all and pass the rest of the url back to the server 
-
-
-####Posting data
-It is still fairly buggy with large chunks of data. see Example for more information.
-
-
-####Cookies ![alt text](https://www.google.com/help/hc/images/chrome_95647_cookie_allowed.png "yummmmmmm")
-Cookies are accessed by the server directly from the request object. see Example for more information.
-
-
-##TODO:
-###misc:
-- [X] move filesystem interaction out of the shitty files.js
-- [X] clean the webmodules.js file for readibility
-- [X] custom 404 pages
-- [X] on-page error reporting
-    - [X] custom on page error reporting
-- [X] fewer crashes!
-    - [ ] proof of fewer crashes (unit tests)
-- [ ] security and sessions
-- [X] make the server itself modifiable though meta-functions
-    - [X] allow users to define their own variable _urls
-- [ ] improved streaming functionality
-- [ ] introduce smoke testing framework
-- [ ] add support for rendering engines
-- [ ] add builtin header support
-
-###feature-completion:
-- [x] re-introduce modules.
-- [ ] interactive cli
-    - [x] at least print SOMETHING (yay stack traces now)
-
