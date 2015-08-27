@@ -1,6 +1,6 @@
 {
-  "name": "isotope-dev",
-  "version": "0.4.11",
+  "name": "isotope",
+  "version": "0.5.0",
   "description": "a simple webserver with powerful dynamic url features",
   "main": "isotope.js",
   "devDependencies": {},
