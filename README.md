@@ -63,7 +63,7 @@ server.get("csv/_csv", function(res, req, csv) {
 // server functions (standard redirection, filesystem interaction, cookies, and more)
 server.get("redirect", function(res, req) {
     // send a 301 from "fail" to "csv/failure,on,every,corner"
-    server.redirect(res, "redirect", "csv/failure,on,every,corner");
+    server.headers.redirect(res, "csv/failure,on,every,corner");
 });
 
 server.get("fstest/_var", function(res, req, a){
@@ -110,6 +110,7 @@ server.get("fail", function(res) {
 // node: if you leave out the underscore, one will NOT be added
 server.meta.addunderscore("_every", function(name, url){
     url.unshift(name);
+    url.unshift("all parts of the url:");
     return url;
 }, true);
 
