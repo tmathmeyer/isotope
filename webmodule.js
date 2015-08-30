@@ -7,23 +7,23 @@ var defined_paths = {
     post : {}
 };
 
-var webrenderer = function(){}
+var webrenderer = function(){};
 webrenderer.prototype._list = [];
 webrenderer.prototype.add = function(render) {
     this._list.unshift(render);
     return this;
-}
+};
 webrenderer.prototype.resolve = function(finalizer) {
-    if (this._list.length == 0){
+    if (this._list.length === 0){
         finalizer();
     } else {
         var thisfunc = this._list.shift();
         webrenderer.prototype.resolve(function(){
             thisfunc();
             finalizer();
-        })
+        });
     }
-}
+};
 
 chain = function(value) {
     return {
@@ -31,14 +31,7 @@ chain = function(value) {
             return chain(cb(value));
         }
     };
-}
-
-
-
-
-
-
-
+};
 
 add = function(path, page_execution, http_action) {
     if (typeof path === 'string'){
@@ -56,7 +49,7 @@ add = function(path, page_execution, http_action) {
         exec: page_execution,
         status: true
     });
-}
+};
 
 
 var pools = {};
@@ -80,20 +73,21 @@ createPool = function(name, wm) {
             var res = wm.get(path, cb);
             this.tagged.push(res);
             return res;
-        }, post : function(path, cb) {
+        },
+        post : function(path, cb) {
             var res = wm.post(path, cb);
             this.tagged.push(res);
             return res;
         }
     });
-}
+};
 
 
 var webmodule = function(){
     this.pool = function(name, withPool){
         withPool(createPool(name, this));
     }
-}
+};
 
 webmodule.prototype.getPool = function(nameornull) {
     if (typeof nameornull === 'undefined') {
@@ -104,28 +98,25 @@ webmodule.prototype.getPool = function(nameornull) {
         disable : pools[nameornull].disable,
         enable : pools[nameornull].enable
     };
-}
+};
 
 webmodule.prototype.meta = {};
-webmodule.prototype.meta.underscore = [
-    {
+webmodule.prototype.meta.underscore = [{
         name: "_var",
         clearonwrite: false,
-        appvars: function(name, url){
+        appvars: function(name){
             return name;
         }
-    },
-    {
+    },{
         name: "_csv",
         clearonwrite: false,
-        appvars: function(name, url){
+        appvars: function(name){
             return name.split(",");
         }
-    },
-    {
+    },{
         name: "_all",
         clearonwrite: true,
-        appvars: function(name, url) {
+        appvars: function(name) {
             url.unshift(name);
             return url.join("/");
         }
@@ -134,11 +125,11 @@ webmodule.prototype.meta.underscore = [
 
 webmodule.prototype.pool = function(name, withPool) {
     withPool(createPool(name));
-}
+};
 
 webmodule.prototype.getRenderer = function(){
     return new webrenderer();
-}
+};
 
 
 webmodule.prototype.initialize = function(configuration) {
@@ -154,12 +145,12 @@ webmodule.prototype.initialize = function(configuration) {
 webmodule.prototype.load_url = function(url, type, params) {
     var func;
     var vars = [];
-    if (type == 'get' || type == 'GET' || type == '_get') {
+    if (type === 'get' || type === 'GET' || type === '_get') {
         func = defined_paths.get;
-    } else if (type == 'post' || type == 'POST' || type == '_post') {
+    } else if (type === 'post' || type === 'POST' || type === '_post') {
         func = defined_paths.post;
     }
-    while(url.length != 0) {
+    while(url.length !== 0) {
         var name = url.shift();
         var tree2 = func[name];
         if (typeof tree2 === 'undefined') {
@@ -184,11 +175,11 @@ webmodule.prototype.load_url = function(url, type, params) {
     }
 };
 
-webmodule.prototype.get = function(path, callback, description, color) {
+webmodule.prototype.get = function(path, callback) {
     return add(path, callback, defined_paths.get);
 }; 
 
-webmodule.prototype.post = function(path, callback, description) {
+webmodule.prototype.post = function(path, callback) {
     return add(path, callback, defined_paths.post);
 };
 
@@ -226,7 +217,7 @@ webmodule.prototype.stream = function(response, fp, type) {
             response.end();
         }
     }, this);
-}
+};
 
 webmodule.prototype.eachCookie = function (request, cb) {
     if (request && request.headers && request.headers.cookie) {
@@ -235,17 +226,17 @@ webmodule.prototype.eachCookie = function (request, cb) {
             cb(parts[0], parts[1]);
         });
     }
-}
+};
 
 webmodule.prototype.notFound = function(response) {
     response.writeHead(404, {"Content-Type": "text/plain"});
     response.end("404");
-}
+};
 
 webmodule.prototype.reportError = function(response, errors) {
     response.writeHead(500, {"Content-Type": "text/plain"});
     response.end(errors+"");
-}
+};
 
 webmodule.prototype.readTemplate = function(templateName, renderfunction){
     fs.readFile(templateName, function (err,data) {
@@ -253,19 +244,15 @@ webmodule.prototype.readTemplate = function(templateName, renderfunction){
             renderfunction(data);
         }
     });
-}
-
-
-
-
+};
 
 webmodule.prototype.meta.define404 = function(notFoundFunction) {
     webmodule.prototype.notFound = notFoundFunction;
-}
+};
 
 webmodule.prototype.meta.define500 = function(notFoundFunction) {
     webmodule.prototype.reportError = notFoundFunction;
-}
+};
 
 webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
     webmodule.prototype.meta.underscore.push({
@@ -273,12 +260,7 @@ webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
         "clearonwrite": absorbAll,
         "appvars": callback
     });
-}
-
-
-
-
-
+};
 
 webmodule.prototype.types = {
     plain: {"Content-Type": "text/plain"},
@@ -287,7 +269,7 @@ webmodule.prototype.types = {
     js   : {"Content-Type": "text/js"},
     png  : {"Content-Type": "image/png"},
     jpg  : {"Content-Type": "image/jpeg"}
-}
+};
 
 webmodule.prototype.headers = {
 
@@ -304,7 +286,6 @@ webmodule.prototype.headers = {
         response.writeHead(301, {"Location": url?url:""});
         response.end(url?url:"");
     }
-}
-
+};
 
 exports.webmodule = new webmodule();
