@@ -1,4 +1,3 @@
-var path = require("path");
 var fs = require("fs");
 var qs = require("querystring");
 
@@ -200,7 +199,7 @@ webmodule.prototype.extract_data = function(request, callback) {
 };
 
 webmodule.prototype.stream = function(response, fp, type) {
-    path.exists(fp, function(exists) {
+    fs.exists(fp, function(exists) {
         if (exists) {
             file = fs.createReadStream(fp);
             response.writeHead(200, type?type:{"Content-Type:": "text/plain"});
