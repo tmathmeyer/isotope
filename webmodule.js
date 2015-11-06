@@ -1,6 +1,22 @@
 var fs = require("fs");
 var qs = require("querystring");
 
+var types = {
+    plain: {"Content-Type": "text/plain"},
+    html : {"Content-Type": "text/html"},
+    css  : {"Content-Type": "text/css"},
+    js   : {"Content-Type": "text/js"},
+    png  : {"Content-Type": "image/png"},
+    jpg  : {"Content-Type": "image/jpeg"}
+};
+
+inferContentType = function(fp) {
+    var extension = fp.substr((~-fp.lastIndexOf(".") >>> 0) + 2);
+    return types[extension] ? 
+        types[extension] :
+        types.plain;
+}
+
 var defined_paths = {
     get : {}, 
     post : {}
@@ -261,14 +277,6 @@ webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
     });
 };
 
-webmodule.prototype.types = {
-    plain: {"Content-Type": "text/plain"},
-    html : {"Content-Type": "text/html"},
-    css  : {"Content-Type": "text/css"},
-    js   : {"Content-Type": "text/js"},
-    png  : {"Content-Type": "image/png"},
-    jpg  : {"Content-Type": "image/jpeg"}
-};
 
 webmodule.prototype.headers = {
 
@@ -288,3 +296,16 @@ webmodule.prototype.headers = {
 };
 
 exports.webmodule = new webmodule();
+
+webmodule.prototype.fixPrototypes = function(request, response, cb) {
+    response.stream = {
+        "relative": function(fp, type) {
+            fp = process.cwd() + "/" + fp;
+            webmodule.prototype.stream(response, fp, type?type:inferContentType(fp));
+        },
+        "static": function(fp, type) {
+            webmodule.prototype.stream(response, fp, type?type:inferContentType(fp));
+        }
+    }
+    cb();
+}

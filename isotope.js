@@ -8,17 +8,18 @@ exports.create = function(port, config) {
     }
 
     http.createServer(function(request, response) {
-        try {
-            var uri = url.parse(request.url).pathname.split("/").slice(1);
-            response.header = headerparse(response);
-            if (! webmodule.load_url(uri, request.method, [response, request])) {
-                webmodule.notFound(response);
+        webmodule.fixPrototypes(request, response, function() {
+            try {
+                var uri = url.parse(request.url).pathname.split("/").slice(1);
+                response.header = headerparse(response);
+                if (! webmodule.load_url(uri, request.method, [response, request])) {
+                    webmodule.notFound(response);
+                }
+            } catch (exc) {
+                console.log(exc.stack);
+                webmodule.reportError(response, exc);
             }
-        } catch (exc) {
-            console.log(exc.stack);
-            webmodule.reportError(response, exc);
-        }
-        
+        });
     }).listen(parseInt(port, 10));
 
     return webmodule;

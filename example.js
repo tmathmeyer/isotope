@@ -8,8 +8,8 @@ server.get("helloworld", function(res){
 
 // accept a post request, and log the data
 server.post("accept", function(res, req){
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end();
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    res.end();
 
     // print to console the data that the user posts
     server.extract_data(req, function(data){
@@ -17,6 +17,9 @@ server.post("accept", function(res, req){
     });
 });
 
+server.get("rules", function(res) {
+    res.stream.static("/home/ted/git/laws.txt");
+});
 
 
 
@@ -55,7 +58,7 @@ server.get("redirect", function(res, req) {
 
 server.get("fstest/_var", function(res, req, a){
     // stream a document from the filesystem (note, this isn't entirely safe yet)
-    server.stream(res, "/Users/ted/Documents/"+a);
+    res.stream.relative(a);
 });
 
 server.get("cookies", function(res, req) {
@@ -142,7 +145,3 @@ server.pool("re-enable", function(pool) {
         server.getPool("example_pool").enable();
     });
 });
-
-
-
-console.log(server.getPool("example_pool"));
