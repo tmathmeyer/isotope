@@ -146,17 +146,6 @@ webmodule.prototype.getRenderer = function(){
     return new webrenderer();
 };
 
-
-webmodule.prototype.initialize = function(configuration) {
-    configuration.forEach(function(data){
-        require("../../"+data.location).init(server);
-    });
-
-    webmodule.prototype.initialize = function() {
-        console.log("you can not call initialize twice");
-    };
-};
-
 webmodule.prototype.load_url = function(url, type, params) {
     var func;
     var vars = [];

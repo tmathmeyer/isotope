@@ -1,11 +1,12 @@
 var http = require("http");
 var url = require("url");
 
-exports.create = function(port, config) {
+exports.create = function(port, modules) {
     webmodule = require("./webmodule").webmodule;
-    if (config) {
-        webmodule.initialize(config);
-    }
+
+    modules.forEach(function(each) {
+        each(webmodule);
+    });
 
     http.createServer(function(request, response) {
         webmodule.fixPrototypes(request, response, function() {
