@@ -3,10 +3,11 @@ var url = require("url");
 
 exports.create = function(port, modules) {
     webmodule = require("./webmodule").webmodule;
-
-    modules.forEach(function(each) {
-        each(webmodule);
-    });
+    if (modules) {
+        modules.forEach(function(each) {
+            each(webmodule);
+        });
+    }
 
     http.createServer(function(request, response) {
         webmodule.fixPrototypes(request, response, function() {
