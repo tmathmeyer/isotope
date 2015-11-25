@@ -187,6 +187,19 @@ webmodule.prototype.post = function(path, callback) {
     return add(path, callback, defined_paths.post);
 };
 
+webmodule.prototype.cookies = function parseCookies (request) {
+    var list = {},
+    rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function(cookie) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+};
+
+
 webmodule.prototype.extract_data = function(request, callback) {
     var body = '';
 
