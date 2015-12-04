@@ -234,12 +234,16 @@ webmodule.prototype.stream = function(response, fp, type, done) {
         });
         file.on('end', function() {
             response.end();
-            done(response);
+            if (done) {
+              done(response);
+            }
         });
     }, function() {
         response.writeHead(404, {"Content-Type": "text/plain"});
         response.end("file not found");
-        done(response);
+        if (done){
+          done(response);
+        }
     });
 };
 
