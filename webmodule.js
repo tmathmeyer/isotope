@@ -12,13 +12,13 @@ var types = {
 
 inferContentType = function(fp) {
     var extension = fp.substr((~-fp.lastIndexOf(".") >>> 0) + 2);
-    return types[extension] ? 
+    return types[extension] ?
         types[extension] :
         types.plain;
 }
 
 var defined_paths = {
-    get : {}, 
+    get : {},
     post : {}
 };
 
@@ -167,7 +167,7 @@ webmodule.prototype.load_url = function(url, type, params) {
                     }
                 }
             });
-        } 
+        }
         func = tree2;
         if (typeof func === 'undefined') {
             return;
@@ -181,7 +181,7 @@ webmodule.prototype.load_url = function(url, type, params) {
 
 webmodule.prototype.get = function(path, callback) {
     return add(path, callback, defined_paths.get);
-}; 
+};
 
 webmodule.prototype.post = function(path, callback) {
     return add(path, callback, defined_paths.post);
@@ -216,24 +216,31 @@ webmodule.prototype.extract_data = function(request, callback) {
     });
 };
 
-webmodule.prototype.stream = function(response, fp, type) {
-    fs.exists(fp, function(exists) {
-        if (exists) {
-            file = fs.createReadStream(fp);
-            response.writeHead(200, type?type:{"Content-Type:": "text/plain"});
-
-            file.on('data', function(chunk) {
-                response.write(chunk);
-            });
-
-            file.on('end', function() {
-                response.end();
-            });
-        } else {
-            response.writeHead(404, {"Content-Type": "text/plain"});
+webmodule.prototype.stream = function(response, fp, type, done) {
+    (function(yes, no){
+        fs.stat(fp, function(err, stats) {
+            if (!err && stats.isFile()) {
+                yes();
+            } else {
+                no();
+            }
+        });
+    })(function() {
+        file = fs.createReadStream(fp);
+        //TODO infer type from file extension
+        response.writeHead(200, type?type:{"Content-Type:": "text/plain"});
+        file.on('data', function(chunk) {
+            response.write(chunk);
+        });
+        file.on('end', function() {
             response.end();
-        }
-    }, this);
+            done(response);
+        });
+    }, function() {
+        response.writeHead(404, {"Content-Type": "text/plain"});
+        response.end("file not found");
+        done(response);
+    });
 };
 
 webmodule.prototype.eachCookie = function (request, cb) {
@@ -288,7 +295,7 @@ webmodule.prototype.headers = {
         } else {
             response.writeHead(200, {"Content-Type":"text/plain"});
         }
-        
+
     },
 
     redirect: function(response, url) {

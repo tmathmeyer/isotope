@@ -1,6 +1,6 @@
 {
   "name": "isotope",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "a simple webserver with powerful dynamic url features",
   "main": "isotope.js",
   "devDependencies": {},
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/tmathmeyer/isotope",
   "dependencies": {
+    "mocha": "^2.3.4",
     "querystring": "^0.2.0"
   }
 }

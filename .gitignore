@@ -2,4 +2,4 @@
 *.log
 *.rdb
 *.swp
-/example
+node_modules/
