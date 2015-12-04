@@ -5,7 +5,7 @@
   "main": "isotope.js",
   "devDependencies": {},
   "scripts": {
-    "test": "node server.js",
+    "test": "./node_modules/mocha/bin/mocha",
     "start": "node server.js"
   },
   "repository": {
