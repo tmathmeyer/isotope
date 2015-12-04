@@ -17,11 +17,6 @@ server.post("accept", function(res, req){
     });
 });
 
-server.get("rules", function(res) {
-    res.stream.static("/home/ted/git/laws.txt");
-});
-
-
 
 //lets throw in the "underscore"
 //a part of a URL object that is passed back dynamically
@@ -63,12 +58,21 @@ server.get("fstest/_var", function(res, req, a){
 
 server.get("cookies", function(res, req) {
     // print all cookies to the document
-    res.writeHead(200, {"Content-Type": "text/plain"});
-    server.eachCookie(function(cname, cvalue){
+    res.writeHead(200, {"Content-Type": "text/html"});
+    server.eachCookie(req, function(cname, cvalue){
         res.write(cname + " = " + cvalue + "<br />");
     });
     res.end();
 });
+
+server.get("setcookie", function(res){
+  res.writeHead(200, {
+    "Content-Type":"text/html",
+    "Set-Cookie":"cookie=example_cookie"
+  });
+  res.write("set a cookie, please visit");
+  res.end("<a href='/cookies'>/cookies</a>");
+})
 
 
 
@@ -105,7 +109,7 @@ server.meta.addunderscore("_every", function(name, url){
 }, true);
 
 // test the new underscore we just added
-server.get("_every", function(res, req, url) {
+server.get("every/_every", function(res, req, url) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     //write each param on a new line
     url.forEach(function(each){
