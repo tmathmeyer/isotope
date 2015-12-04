@@ -1,4 +1,4 @@
-var server = require("./isotope").create(8080); // soon will be changed to isotope
+var server = require("./isotope").create(8080);
 
 // super basic demo of the app process
 server.get("helloworld", function(res){
@@ -36,7 +36,7 @@ server.get("greet/_var/_var", function(res, req, first, last){
     res.end("greetings "+first+" "+last);
 });
 
-// the csv underscore allows the user to pass in a list separated with commas. 
+// the csv underscore allows the user to pass in a list separated with commas.
 // think imgur multi-image urls (the inspiration)
 // this can also be used many times in one url, like _var
 server.get("csv/_csv", function(res, req, csv) {
@@ -77,7 +77,7 @@ server.get("cookies", function(res, req) {
 // META: this allows you to dynamically change HOW the server works.
 //       it is essentially an API into the server itself
 server.meta.define404(function(response) {
-    // set up a custom 404 page. 
+    // set up a custom 404 page.
     // here we change "404" to "custom 404 page"
     response.writeHead(404, {"Content-Type": "text/plain"});
     response.end("custom 404 page");
@@ -96,7 +96,7 @@ server.get("fail", function(res) {
 });
 
 // remember underscores? those are meta too. you can add your own custom ones
-// we recommend prependin each with an _, but it is optional. 
+// we recommend prependin each with an _, but it is optional.
 // node: if you leave out the underscore, one will NOT be added
 server.meta.addunderscore("_every", function(name, url){
     url.unshift(name);

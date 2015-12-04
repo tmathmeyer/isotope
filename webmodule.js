@@ -18,8 +18,10 @@ inferContentType = function(fp) {
 }
 
 var defined_paths = {
-    get : {},
-    post : {}
+    "get" : {},
+    "post" : {},
+    "put": {},
+    "delete": {}
 };
 
 var webrenderer = function(){};
@@ -52,7 +54,7 @@ add = function(path, page_execution, http_action) {
     if (typeof path === 'string'){
         path = path.split("/");
     }
-    var current_branch = http_action;
+    var current_branch = defined_paths[http_action];
     path.forEach(function(every) {
         if (! current_branch[every]) {
             current_branch[every] = {};
@@ -180,11 +182,11 @@ webmodule.prototype.load_url = function(url, type, params) {
 };
 
 webmodule.prototype.get = function(path, callback) {
-    return add(path, callback, defined_paths.get);
+    return add(path, callback, "get");
 };
 
 webmodule.prototype.post = function(path, callback) {
-    return add(path, callback, defined_paths.post);
+    return add(path, callback, "post");
 };
 
 webmodule.prototype.cookies = function parseCookies (request) {
@@ -202,7 +204,6 @@ webmodule.prototype.cookies = function parseCookies (request) {
 
 webmodule.prototype.extract_data = function(request, callback) {
     var body = '';
-
     request.on('data', function(data) {
         body += data;
         if (body.length > 1e6) {
@@ -210,7 +211,6 @@ webmodule.prototype.extract_data = function(request, callback) {
             return {error: "the user attempted to post a file larger than 1GB"};
         }
     });
-
     request.on('end', function() {
         callback(qs.parse(body));
     });
@@ -278,6 +278,10 @@ webmodule.prototype.meta.define404 = function(notFoundFunction) {
     webmodule.prototype.notFound = notFoundFunction;
 };
 
+webmodule.prototype.meta.defineMeta = function(name, fn) {
+    webmodule.prototype[name] = fn;
+}
+
 webmodule.prototype.meta.define500 = function(notFoundFunction) {
     webmodule.prototype.reportError = notFoundFunction;
 };
@@ -292,19 +296,23 @@ webmodule.prototype.meta.addunderscore = function(name, callback, absorbAll){
 
 
 webmodule.prototype.headers = {
-
-    ok: function(response, contentType) {
+    ok: function(response, contentType, done) {
         if (contentType) {
             response.writeHead(200, contentType);
         } else {
-            response.writeHead(200, {"Content-Type":"text/plain"});
+            response.writeHead(200, webmodule.ok);
         }
-
+        if (done) {
+          done(response);
+        }
     },
 
-    redirect: function(response, url) {
-        response.writeHead(301, {"Location": url?url:""});
-        response.end(url?url:"");
+    redirect: function(response, url, done) {
+        response.writeHead(301, {"Location": url?url:"/"});
+        response.end();
+        if (done) {
+          done(response);
+        }
     }
 };
 
@@ -319,6 +327,15 @@ webmodule.prototype.fixPrototypes = function(request, response, cb) {
         "static": function(fp, type) {
             webmodule.prototype.stream(response, fp, type?type:inferContentType(fp));
         }
+    };
+
+    request.stream = {
+      "data": function(withData) {
+        webmodule.prototype.extract_data(request, withData);
+      },
+      "cookies": function(withData) {
+        withData(webmodule.prototype.cookies(request));
+      }
     }
     cb();
 }
