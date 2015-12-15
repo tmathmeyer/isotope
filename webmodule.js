@@ -151,7 +151,7 @@ webmodule.prototype.getRenderer = function(){
 webmodule.prototype.load_url = function(url, query, type, params) {
     var func;
     var vars = [];
-    params[1].query = query;
+    params[1].query = qs.parse(query);
     if (type === 'get' || type === 'GET' || type === '_get') {
         func = defined_paths.get;
     } else if (type === 'post' || type === 'POST' || type === '_post') {
