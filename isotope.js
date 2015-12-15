@@ -14,7 +14,7 @@ exports.create = function(port, modules) {
             try {
                 var parsed = url.parse(request.url);
                 var uri = parsed.pathname.split("/").slice(1);
-                var query = parsed.query();
+                var query = parsed.query;
                 response.header = headerparse(response);
                 if (! webmodule.load_url(uri, query, request.method, [response, request])) {
                     webmodule.notFound(response);
